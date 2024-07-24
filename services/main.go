@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/ghanatava/learning-Go/services/handlers"
+	"github.com/go-openapi/runtime/middleware"
+	gohandler "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -31,9 +33,18 @@ func main() {
 	postRouter.HandleFunc("/", ph.AddProducts)
 	postRouter.Use(ph.MiddlewareProductValidation)
 
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(opts, nil)
+
+	getRouter.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+	getRouter.Handle("/docs", sh)
+
+	//CORS
+	ch := gohandler.CORS(gohandler.AllowedOrigins([]string{"*"}))
+
 	s := &http.Server{
 		Addr:         ":9090",
-		Handler:      sm,
+		Handler:      ch(sm),
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,

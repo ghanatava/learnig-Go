@@ -1,0 +1,82 @@
+definitions:
+    Product:
+        description: Product defines the structure for an API product
+        properties:
+            description:
+                type: string
+                x-go-name: Description
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            name:
+                type: string
+                x-go-name: Name
+            price:
+                format: float
+                type: number
+                x-go-name: Price
+            sku:
+                type: string
+                x-go-name: SKU
+        type: object
+        x-go-package: github.com/ghanatava/learning-Go/services/data
+info: {}
+paths:
+    /products:
+        get:
+            operationId: getProducts
+            responses:
+                "200":
+                    $ref: '#/responses/productsResponse'
+            tags:
+                - products
+        post:
+            operationId: addProduct
+            responses:
+                "201":
+                    $ref: '#/responses/productCreatedResponse'
+                "400":
+                    $ref: '#/responses/badRequestResponse'
+            tags:
+                - products
+    /products/{id}:
+        put:
+            operationId: updateProduct
+            responses:
+                "204":
+                    $ref: '#/responses/noContentResponse'
+                "400":
+                    $ref: '#/responses/badRequestResponse'
+                "404":
+                    $ref: '#/responses/notFoundResponse'
+            tags:
+                - products
+responses:
+    badRequestResponse:
+        description: ""
+        schema:
+            properties:
+                message:
+                    type: string
+                    x-go-name: Message
+            type: object
+    noContentResponse:
+        description: ""
+    notFoundResponse:
+        description: ""
+        schema:
+            properties:
+                message:
+                    type: string
+                    x-go-name: Message
+            type: object
+    productCreatedResponse:
+        description: ""
+    productsResponse:
+        description: ""
+        schema:
+            items:
+                $ref: '#/definitions/Product'
+            type: array
+swagger: "2.0"
